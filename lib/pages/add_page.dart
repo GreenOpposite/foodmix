@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodmix/models/food_list.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddPage extends StatefulWidget {
   @override
@@ -9,6 +10,22 @@ class AddPage extends StatefulWidget {
 class _AddPageState extends State<AddPage> {
   TextEditingController _nameController = TextEditingController();
 
+  void addFood() {
+    String name = _nameController.text;
+    if (name == "") {
+      Fluttertoast.showToast(msg: "Das Essen braucht einen Namen.");
+      return;
+    }
+
+    FoodList.addFood(
+      Food(name: name),
+    );
+    Fluttertoast.showToast(msg: "$name hinzugefügt!");
+    setState(() {
+      _nameController.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,23 +33,24 @@ class _AddPageState extends State<AddPage> {
         title: Text("Hinzufügen"),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
+            Text("Essen"),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: TextField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  hintText: "Name",
+                  border: OutlineInputBorder(),
+                ),
               ),
             ),
             ElevatedButton(
-              onPressed: () {
-                FoodList.addFood(
-                  Food(name: _nameController.text),
-                );
-              },
-              child: Text("Add"),
+              onPressed: () => addFood(),
+              child: Text("Hinzufügen"),
             ),
           ],
         ),
